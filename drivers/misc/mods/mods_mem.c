@@ -2245,9 +2245,9 @@ static void clear_contiguous_cache(struct mods_client *client,
 				   u32                 size)
 {
 #ifdef MODS_HAS_TEGRA
-	__flush_dcache_area((void *)(size_t)(virt_start), size);
+	dcache_clean_inval_poc((unsigned long)(virt_start), size);
 #else
-	/* __flush_dcache_area is not exported in upstream kernels */
+	/* dcache_clean_inval_poc is not exported in upstream kernels */
 	u64 end = virt_start + size;
 	u64 cur;
 	u32 d_line_shift = 4; /* Fallback for kernel 5.9 or older */

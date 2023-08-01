@@ -520,8 +520,8 @@ pci_client_change_link_status(void *pci_client_h,
 	 */
 	atomic_set(&ctx->link_status, status);
 	*((enum nvscic2c_pcie_link *)ctx->link_status_mem.pva) = status;
-	__flush_dcache_area(ctx->link_status_mem.pva,
-			    ctx->link_status_mem.size);
+	dcache_clean_inval_poc((unsigned long)ctx->link_status_mem.pva,
+			       ctx->link_status_mem.size);
 
 	/* interrupt registered users. */
 	mutex_lock(&ctx->event_tbl_lock);

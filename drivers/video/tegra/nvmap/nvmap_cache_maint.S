@@ -65,7 +65,7 @@ alternative_else_nop_endif
 SYM_FUNC_END(invalidate_icache_range)
 
 /*
- *	__flush_dcache_area(kaddr, size)
+ *	dcache_clean_inval_poc(kaddr, size)
  *
  *	Ensure that any D-cache lines for the interval [kaddr, kaddr+size)
  *	are cleaned and invalidated to the PoC.
@@ -73,14 +73,14 @@ SYM_FUNC_END(invalidate_icache_range)
  *	- kaddr   - kernel address
  *	- size    - size in question
  */
-NVMAP_SYM_FUNC_START(__flush_dcache_area)
+NVMAP_SYM_FUNC_START(dcache_clean_inval_poc)
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 14, 0)
 	add	x1, x0, x1
 #endif
 	dcache_by_line_op civac, sy, x0, x1, x2, x3
 	ret
-NVMAP_SYM_FUNC_END(__flush_dcache_area)
-NVMAP_SYM_FUNC_ALIAS(__flush_dcache_area)
+NVMAP_SYM_FUNC_END(dcache_clean_inval_poc)
+NVMAP_SYM_FUNC_ALIAS(dcache_clean_inval_poc)
 
 /*
  *	__clean_dcache_area_pou(kaddr, size)
