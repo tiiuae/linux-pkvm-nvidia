@@ -22,6 +22,7 @@
 #include <linux/version.h>
 #include <asm/arch_timer.h>
 #include <asm/cpuidle.h>
+#include <asm/kvm_host.h>
 #include "../../drivers/cpuidle/dt_idle_states.h"
 #include "../../kernel/irq/internals.h"
 #include "../../kernel/time/tick-internal.h"
@@ -175,12 +176,16 @@ static DEFINE_PER_CPU(uint32_t, saved_timer_ctl_reg);
 static int t23x_cpuidle_cpu_pm_notify(struct notifier_block *self,
 				    unsigned long action, void *hcpu)
 {
-	if (action == CPU_PM_ENTER)
-		__this_cpu_write(saved_timer_ctl_reg,
-			read_sysreg(cnthp_ctl_el2) & TIMER_CTL_CTX);
-	else if (action == CPU_PM_ENTER_FAILED || action == CPU_PM_EXIT)
-		write_sysreg(__this_cpu_read(saved_timer_ctl_reg),
-							cnthp_ctl_el2);
+	if (kvm_get_mode() == KVM_MODE_PROTECTED) {
+		return notifier_from_errno(-EBUSY);
+	} else {
+		if (action == CPU_PM_ENTER)
+			__this_cpu_write(saved_timer_ctl_reg,
+					 read_sysreg(cnthp_ctl_el2) & TIMER_CTL_CTX);
+		else if (action == CPU_PM_ENTER_FAILED || action == CPU_PM_EXIT)
+			write_sysreg(__this_cpu_read(saved_timer_ctl_reg),
+				     cnthp_ctl_el2);
+	}
 
 	return NOTIFY_OK;
 }
