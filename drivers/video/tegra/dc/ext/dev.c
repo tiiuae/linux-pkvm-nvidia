@@ -2546,7 +2546,7 @@ static int tegra_dc_ext_get_status(struct tegra_dc_ext_user *user,
 	return 0;
 }
 
-#ifdef CONFIG_COMPAT
+#if defined(CONFIG_COMPAT) && defined(CONFIG_TEGRA_ISOMGR)
 static int dev_cpy_from_usr_compat(
 			struct tegra_dc_ext_flip_windowattr *outptr,
 			void *inptr, u32 usr_win_size, u32 win_num)
