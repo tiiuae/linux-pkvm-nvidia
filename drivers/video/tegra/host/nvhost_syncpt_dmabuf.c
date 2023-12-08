@@ -7,6 +7,7 @@
 #include <linux/nvhost_t194.h>
 #include <linux/dma-buf.h>
 #include <linux/dma-mapping.h>
+#include <linux/slab.h>
 #include <uapi/linux/nvhost_ioctl.h>
 
 #include "host1x/host1x.h"
